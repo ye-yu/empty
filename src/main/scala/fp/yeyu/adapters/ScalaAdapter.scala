@@ -19,7 +19,7 @@ class ScalaAdapter extends LanguageAdapter {
       try {
         val instance = classForName(value + "$")
           .getField("MODULE$")
-          .get()
+          .get(null)
         // object class is most likely a companion object
         if (!clazz.isInstance(instance)) getMainClass()
         else instance.asInstanceOf[T]

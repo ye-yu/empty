@@ -27,4 +27,5 @@ object MemoryMain {
   private val MOD_FOLDER = "./mods/Time Shifter"
   private val RECYCLE_BIN = "recyclebin"
   val RECYCLE_BIN_FILE = new File(MOD_FOLDER, RECYCLE_BIN)
+  val BACKUPS_FOLDER = new File("backups")
 }

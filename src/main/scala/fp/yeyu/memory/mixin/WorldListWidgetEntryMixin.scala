@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.{At, Inject}
 import org.spongepowered.asm.mixin.{Final, Mixin, Shadow}
 
 @Mixin(targets = Array("net.minecraft.client.gui.screen.world.WorldListWidget$Entry"))
-abstract class LevelStorageSessionMixin {
+abstract class WorldListWidgetEntryMixin {
 
   @Shadow
   @Final val level: LevelSummary = null
