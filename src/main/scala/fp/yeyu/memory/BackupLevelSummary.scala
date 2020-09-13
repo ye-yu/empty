@@ -2,8 +2,7 @@ package fp.yeyu.memory
 
 import java.io.File
 
-import fp.yeyu.memory.mixin.LevelStorageMixin
-import fp.yeyu.memory.mixinaccessor.LevelSummaryAccessor
+import fp.yeyu.memory.mixin.LevelSummaryAccessor
 import net.minecraft.world.level.LevelInfo
 import net.minecraft.world.level.storage.{LevelSummary, SaveVersionInfo}
 

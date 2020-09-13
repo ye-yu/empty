@@ -5,7 +5,7 @@
   "mixins": [
     "WorldListWidgetEntryMixin",
     "LevelStorageMixin",
-    "LevelSummaryMixin"
+    "LevelSummaryAccessor"
   ],
   "client": [
   ],
