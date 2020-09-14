@@ -3,17 +3,15 @@ package fp.yeyu.memory.mixin
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import com.google.common.collect.ImmutableList
 import com.mojang.blaze3d.systems.RenderSystem
 import fp.yeyu.memory.{BackupLevelSummary, MemoryMain}
-import net.minecraft.SharedConstants
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.gui.screen.world.{SelectWorldScreen, WorldListWidget}
+import net.minecraft.client.gui.screen.world.SelectWorldScreen
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.{LiteralText, TranslatableText}
+import net.minecraft.text.LiteralText
 import net.minecraft.util.{Formatting, Identifier}
 import net.minecraft.world.level.storage.LevelSummary
 import org.apache.commons.io.FileUtils
@@ -82,10 +80,10 @@ abstract class WorldListWidgetEntryMixin {
       val nameCaptionY = (y + 1).toFloat
       textRenderer.draw(matrices, displayName, captionX, nameCaptionY, 0x999966)
 
-      val dateCaptionY = nameCaptionY + 9 + 3
+      val dateCaptionY = nameCaptionY + 12
       textRenderer.draw(matrices, date, captionX, dateCaptionY, 0x999966)
 
-      val levelCaptionY = y + 23
+      val levelCaptionY = dateCaptionY + 10
       textRenderer.draw(matrices, levelCaption, captionX, levelCaptionY.toFloat, 0x999966)
 
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F)

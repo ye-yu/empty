@@ -8,7 +8,6 @@ import com.mojang.datafixers.DataFixer
 import com.mojang.serialization.Dynamic
 import fp.yeyu.memory.BackupLevelSummary
 import net.minecraft.SharedConstants
-import net.minecraft.client.gui.screen.world.WorldListWidget
 import net.minecraft.nbt.{NbtIo, NbtOps}
 import net.minecraft.resource.DataPackSettings
 import net.minecraft.world.level.LevelInfo
