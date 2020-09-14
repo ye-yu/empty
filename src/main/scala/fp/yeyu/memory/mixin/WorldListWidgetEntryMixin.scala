@@ -35,6 +35,7 @@ abstract class WorldListWidgetEntryMixin {
   @Shadow
   @Final val level: LevelSummary = null
 
+  //noinspection ScalaUnusedSymbol
   @Inject(method = Array("method_20170"), at = Array(new At("HEAD")), cancellable = true)
   def onDelete(bool: Boolean, callback: CallbackInfo): Unit = {
     if (!bool) return
@@ -127,7 +128,6 @@ abstract class WorldListWidgetEntryMixin {
       this.time = Util.getMeasuringTimeMs
       callbackInfo.setReturnValue(true)
     }
-
     callbackInfo.setReturnValue(true)
   }
 }
