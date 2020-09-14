@@ -4,28 +4,30 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.mojang.blaze3d.systems.RenderSystem
-import fp.yeyu.memory.{BackupLevelSummary, MemoryMain}
+import fp.yeyu.memory.{BackupLevelSummary, LevelUtil, MemoryMain}
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.gui.screen.world.SelectWorldScreen
+import net.minecraft.client.gui.screen.world.{SelectWorldScreen, WorldListWidget}
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.LiteralText
-import net.minecraft.util.{Formatting, Identifier}
+import net.minecraft.util.{Formatting, Identifier, Util}
 import net.minecraft.world.level.storage.LevelSummary
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
+import org.spongepowered.asm.mixin.injection.callback.{CallbackInfo, CallbackInfoReturnable}
 import org.spongepowered.asm.mixin.injection.{At, Inject}
 import org.spongepowered.asm.mixin.{Final, Mixin, Shadow}
 
-@Mixin(targets = Array("net.minecraft.client.gui.screen.world.WorldListWidget$Entry"))
+@Mixin(Array(classOf[WorldListWidget#Entry]))
 abstract class WorldListWidgetEntryMixin {
 
   @Shadow var screen: SelectWorldScreen = _
 
   @Shadow var iconLocation: Identifier = _
+
+  @Shadow var time: Long = _
 
   @Shadow
   @Final val icon: NativeImageBackedTexture = null
@@ -47,7 +49,7 @@ abstract class WorldListWidgetEntryMixin {
     MemoryMain.lock = false
   }
 
-  //noinspection ScalaDeprecation
+  //noinspection ScalaDeprecation,ScalaUnusedSymbol
   @Inject(method = Array("render"), at = Array(new At("INVOKE")), cancellable = true)
   def onRender(matrices: MatrixStack,
                index: Int,
@@ -105,9 +107,27 @@ abstract class WorldListWidgetEntryMixin {
         DrawableHelper.drawTexture(matrices, x, y, 96.0F, j.toFloat, 32, 32, 256, 256)
         if (bl) this.screen.setTooltip(client.textRenderer.wrapLines(restoreMessage, 175))
       }
-
-
       callbackInfo.cancel()
     }
+  }
+
+  //noinspection ScalaUnusedSymbol
+  @Inject(method = Array("mouseClicked"), at = Array(new At("HEAD")), cancellable = true)
+  def onMouseClicked(mouseX: Double, mouseY: Double, button: Int, callbackInfo: CallbackInfoReturnable[Boolean]): Unit = {
+    if (!level.isInstanceOf[BackupLevelSummary]) return
+    if (MinecraftClient.getInstance().currentScreen == null) return
+    val thisWorldListWidget = MinecraftClient.getInstance().currentScreen.asInstanceOf[SelectWorldScreenAccessor].getLevelList
+    thisWorldListWidget.setSelected(this.asInstanceOf[Object].asInstanceOf[WorldListWidget#Entry])
+    this.screen.worldSelected(thisWorldListWidget.method_20159.isPresent)
+    if (Util.getMeasuringTimeMs - this.time < 250L) {
+      LevelUtil.restoreWorld(level)
+      callbackInfo.setReturnValue(true)
+    }
+    else {
+      this.time = Util.getMeasuringTimeMs
+      callbackInfo.setReturnValue(true)
+    }
+
+    callbackInfo.setReturnValue(true)
   }
 }
