@@ -8,6 +8,7 @@ import com.mojang.datafixers.DataFixer
 import com.mojang.serialization.Dynamic
 import fp.yeyu.memory.BackupLevelSummary
 import net.minecraft.SharedConstants
+import net.minecraft.client.gui.screen.world.WorldListWidget
 import net.minecraft.nbt.{NbtIo, NbtOps}
 import net.minecraft.resource.DataPackSettings
 import net.minecraft.world.level.LevelInfo
@@ -35,7 +36,6 @@ class LevelStorageMixin {
     val size = files.length
 
     repeat(i => {
-      println(s"Reading $i of $size")
       val file = files(i)
       if (file.isDirectory) {
         val nbt = NbtIo.readCompressed(new File(file, "level.dat")).getCompound("Data")
@@ -48,7 +48,7 @@ class LevelStorageMixin {
           val requiresConversion = saveVersionInfo.getVersionId != 19133
           val iconFile = new File(file, "icon.png")
           val levelInfo = LevelInfo.fromDynamic(dynamic, DataPackSettings.SAFE_MODE)
-          val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, file.getName, requiresConversion, false, iconFile)
+          val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, file.getName, requiresConversion, true, iconFile)
           levelList.add(levelSummary)
         }
       }
