@@ -46,6 +46,7 @@ object ConfirmRestoreScreen {
         SystemToast.add(MinecraftClient.getInstance().getToastManager, SystemToast.Type.WORLD_ACCESS_FAILURE, new LiteralText(s"Failed to restore ${level.getName}"), null)
     }
 
+    FileUtils.deleteDirectory(level.directory)
     val levelList = selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getLevelList
     levelList.filter(() => selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getSearchBox.getText, true)
     MinecraftClient.getInstance().openScreen(selectWorldScreen)

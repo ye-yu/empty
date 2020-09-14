@@ -56,7 +56,9 @@ class LevelStorageMixin {
 
   @tailrec
   final def repeat(intConsumer: Int => Unit, count: Int, start: Int = 0): Unit = {
-    intConsumer(start)
-    if (start < count - 1) repeat(intConsumer, count, start + 1)
+    if (start < count) {
+      intConsumer(start)
+      repeat(intConsumer, count, start + 1)
+    }
   }
 }

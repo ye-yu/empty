@@ -41,12 +41,23 @@ abstract class WorldListWidgetEntryMixin {
   def onDelete(bool: Boolean, callback: CallbackInfo): Unit = {
     val logger = LogManager.getLogger
     if (!bool) return
-    val directory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory.resolve(level.getName)
-    logger.info(s"About to copy $directory")
-    val saveDirectory = directory.getName(directory.getNameCount - 1)
-    var i = 0
-    while (MemoryMain.RECYCLE_BIN_FILE.toPath.resolve(s"$saveDirectory-$i").toFile.exists()) i = i + 1
-    FileUtils.copyDirectory(directory.toFile, MemoryMain.RECYCLE_BIN_FILE.toPath.resolve(s"$saveDirectory-$i").toFile)
+
+    level match {
+      case summary: BackupLevelSummary =>
+        FileUtils.deleteDirectory(summary.directory)
+        val levelList = screen.asInstanceOf[SelectWorldScreenAccessor].getLevelList
+        val searchBox = screen.asInstanceOf[SelectWorldScreenAccessor].getSearchBox
+        levelList.filter(() => searchBox.getText, true)
+        MinecraftClient.getInstance().openScreen(screen)
+        callback.cancel()
+      case _ =>
+        val directory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory.resolve(level.getName)
+        logger.info(s"About to copy $directory")
+        val saveDirectory = directory.getName(directory.getNameCount - 1)
+        var i = 0
+        while (MemoryMain.BACKUPS_FOLDER.toPath.resolve(s"$saveDirectory-$i").toFile.exists()) i = i + 1
+        FileUtils.copyDirectory(directory.toFile, MemoryMain.BACKUPS_FOLDER.toPath.resolve(s"$saveDirectory-$i").toFile)
+    }
   }
 
   //noinspection ScalaDeprecation,ScalaUnusedSymbol

@@ -1,13 +1,10 @@
 package fp.yeyu.memory.mixin
 
-import fp.yeyu.memory.{BackupLevelSummary, ConfirmRestoreScreen, MemoryMain}
+import fp.yeyu.memory.{BackupLevelSummary, ConfirmRestoreScreen}
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.world.{SelectWorldScreen, WorldListWidget}
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.text.{LiteralText, TranslatableText}
-import net.minecraft.world.level.storage.LevelSummary
-import org.apache.commons.io.FileUtils
-import org.apache.logging.log4j.LogManager
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.{At, Inject}
 import org.spongepowered.asm.mixin.{Mixin, Shadow}
@@ -30,6 +27,7 @@ class SelectWorldScreenMixin {
       this.recreateButton.setMessage(recreateText)
       return
     }
+
     if (!levelList.getSelected.asInstanceOf[WorldListWidgetEntryAccessor].getLevel.isInstanceOf[BackupLevelSummary]) {
       this.recreateButton.setMessage(recreateText)
       return
