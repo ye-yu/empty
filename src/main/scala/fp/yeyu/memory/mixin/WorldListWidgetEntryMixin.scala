@@ -16,6 +16,7 @@ import net.minecraft.util.{Formatting, Identifier, Util}
 import net.minecraft.world.level.storage.LevelSummary
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
+import org.apache.logging.log4j.LogManager
 import org.spongepowered.asm.mixin.injection.callback.{CallbackInfo, CallbackInfoReturnable}
 import org.spongepowered.asm.mixin.injection.{At, Inject}
 import org.spongepowered.asm.mixin.{Final, Mixin, Shadow}
@@ -38,16 +39,14 @@ abstract class WorldListWidgetEntryMixin {
   //noinspection ScalaUnusedSymbol
   @Inject(method = Array("method_20170"), at = Array(new At("HEAD")), cancellable = true)
   def onDelete(bool: Boolean, callback: CallbackInfo): Unit = {
+    val logger = LogManager.getLogger
     if (!bool) return
     val directory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory.resolve(level.getName)
-    println(s"About to copy $directory")
-    if (MemoryMain.lock) return
-    MemoryMain.lock = true
+    logger.info(s"About to copy $directory")
     val saveDirectory = directory.getName(directory.getNameCount - 1)
     var i = 0
     while (MemoryMain.RECYCLE_BIN_FILE.toPath.resolve(s"$saveDirectory-$i").toFile.exists()) i = i + 1
     FileUtils.copyDirectory(directory.toFile, MemoryMain.RECYCLE_BIN_FILE.toPath.resolve(s"$saveDirectory-$i").toFile)
-    MemoryMain.lock = false
   }
 
   //noinspection ScalaDeprecation,ScalaUnusedSymbol

@@ -35,9 +35,9 @@ class LevelStorageMixin {
     val size = files.length
 
     repeat(i => {
-      val file = files(i)
-      if (file.isDirectory) {
-        val nbt = NbtIo.readCompressed(new File(file, "level.dat")).getCompound("Data")
+      val backupDirectory = files(i)
+      if (backupDirectory.isDirectory) {
+        val nbt = NbtIo.readCompressed(new File(backupDirectory, "level.dat")).getCompound("Data")
         nbt.remove("Player")
         val dataVersion = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
 
@@ -45,9 +45,9 @@ class LevelStorageMixin {
           val dynamic = new Dynamic(NbtOps.INSTANCE, nbt)
           val saveVersionInfo = SaveVersionInfo.fromDynamic(dynamic)
           val requiresConversion = saveVersionInfo.getVersionId != 19133
-          val iconFile = new File(file, "icon.png")
+          val iconFile = new File(backupDirectory, "icon.png")
           val levelInfo = LevelInfo.fromDynamic(dynamic, DataPackSettings.SAFE_MODE)
-          val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, file.getName, requiresConversion, true, iconFile)
+          val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, backupDirectory.getName, requiresConversion, true, iconFile, backupDirectory)
           levelList.add(levelSummary)
         }
       }
