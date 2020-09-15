@@ -1,7 +1,8 @@
 package fp.yeyu.memory.mixin
 
-import fp.yeyu.memory.{BackupLevelSummary, ConfirmRestoreScreen}
+import fp.yeyu.memory.{BackupLevelSummary, BackupListUtil, ConfirmRestoreScreen}
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.world.{SelectWorldScreen, WorldListWidget}
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.text.{LiteralText, TranslatableText}
@@ -10,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.{At, Inject}
 import org.spongepowered.asm.mixin.{Mixin, Shadow}
 
 @Mixin(Array(classOf[SelectWorldScreen]))
-class SelectWorldScreenMixin {
+abstract class SelectWorldScreenMixin extends Screen(null) {
   @Shadow var levelList: WorldListWidget = _
 
   @Shadow var deleteButton: ButtonWidget = _
@@ -48,5 +49,11 @@ class SelectWorldScreenMixin {
     if (!level.isInstanceOf[BackupLevelSummary]) return
     MinecraftClient.getInstance().openScreen(new ConfirmRestoreScreen(level.asInstanceOf[BackupLevelSummary], this.asInstanceOf[Object].asInstanceOf[SelectWorldScreen]))
     callbackInfo.cancel()
+  }
+
+  //noinspection ScalaUnusedSymbol
+  @Inject(method = Array("init"), at = Array(new At("TAIL")))
+  def onInit(callbackInfo: CallbackInfo): Unit = {
+    addButton(new ButtonWidget(this.width - 105, 2, 100, 20, new LiteralText("Show Backups"), BackupListUtil.onToggleWorld))
   }
 }

@@ -6,7 +6,7 @@ import java.util
 
 import com.mojang.datafixers.DataFixer
 import com.mojang.serialization.Dynamic
-import fp.yeyu.memory.BackupLevelSummary
+import fp.yeyu.memory.{BackupLevelSummary, BackupListUtil}
 import net.minecraft.SharedConstants
 import net.minecraft.nbt.{NbtIo, NbtOps}
 import net.minecraft.resource.DataPackSettings
@@ -29,6 +29,7 @@ class LevelStorageMixin {
 
   @Inject(method = Array("getLevelList"), at = Array(new At("RETURN")), cancellable = true)
   def onListLevels(callback: CallbackInfoReturnable[util.List[LevelSummary]]): Unit = {
+    if (!BackupListUtil.toggleState) return
     val levelList = callback.getReturnValue
     val files = backupsDirectory.toFile.listFiles
     if (files == null) return

@@ -6,6 +6,7 @@
     "WorldListWidgetEntryMixin",
     "LevelStorageMixin",
     "SelectWorldScreenMixin",
+    "CreateWorldScreenMixin",
 
     "LevelSummaryAccessor",
     "SelectWorldScreenAccessor",
