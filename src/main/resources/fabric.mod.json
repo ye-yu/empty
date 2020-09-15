@@ -13,14 +13,11 @@
   },
   "license": "CC0-1.0",
   "icon": "assets/friendlymob/icon.png",
-  "languageAdapters": {
-    "scala-new": "fp.yeyu.adapters.ScalaAdapter"
-  },
   "environment": "client",
   "entrypoints": {
     "client": [
       {
-        "adapter": "scala-new",
+        "adapter": "scala",
         "value": "fp.yeyu.memory.MemoryMain"
       }
     ]
