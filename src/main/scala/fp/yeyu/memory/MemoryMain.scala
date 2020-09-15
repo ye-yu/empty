@@ -8,7 +8,7 @@ import org.apache.logging.log4j.{LogManager, Logger}
 
 object MemoryMain extends ClientModInitializer {
   private val LOGGER: Logger = LogManager.getLogger()
-  private val MOD_FOLDER = "./mods/Time Shifter"
+  private val MOD_FOLDER = "./mods/pdmod"
   private val CONFIG_FILE = "config.txt"
   val CONFIG_FILE_INSTANCE = new File(MOD_FOLDER, CONFIG_FILE)
   val BACKUPS_FOLDER = new File("backups")
