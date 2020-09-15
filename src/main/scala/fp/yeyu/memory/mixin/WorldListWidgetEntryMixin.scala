@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.mojang.blaze3d.systems.RenderSystem
-import fp.yeyu.memory.{BackupLevelSummary, LevelUtil, MemoryMain}
+import fp.yeyu.memory.{BackupLevelSummary, ConfirmRestoreScreen, LevelUtil, MemoryMain}
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.gui.screen.world.{SelectWorldScreen, WorldListWidget}
+import net.minecraft.client.gui.screen.world.{EditWorldScreen, SelectWorldScreen, WorldListWidget}
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.util.math.MatrixStack
@@ -51,12 +51,18 @@ abstract class WorldListWidgetEntryMixin {
         MinecraftClient.getInstance().openScreen(screen)
         callback.cancel()
       case _ =>
-        val directory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory.resolve(level.getName)
-        logger.info(s"About to copy $directory")
-        val saveDirectory = directory.getName(directory.getNameCount - 1)
-        var i = 0
-        while (MemoryMain.BACKUPS_FOLDER.toPath.resolve(s"$saveDirectory-$i").toFile.exists()) i = i + 1
-        FileUtils.copyDirectory(directory.toFile, MemoryMain.BACKUPS_FOLDER.toPath.resolve(s"$saveDirectory-$i").toFile)
+        try {
+          val directory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory.resolve(level.getName)
+          logger.info(s"About to copy $directory")
+          val saveDirectory = ConfirmRestoreScreen.resolveTargetName(MemoryMain.BACKUPS_FOLDER.toPath, level.getName)
+          FileUtils.moveDirectory(directory.toFile, saveDirectory)
+        } catch {
+          case _: Throwable =>
+            logger.info(s"Cannot copy world. Resolving by vanilla backup")
+            val session = MinecraftClient.getInstance().getLevelStorage.createSession(level.getName)
+            EditWorldScreen.backupLevel(session)
+            session.close()
+        }
     }
   }
 

@@ -37,7 +37,7 @@ object ConfirmRestoreScreen {
     try {
       val worldDirectory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory
       val saveDirectory = resolveTargetName(worldDirectory, level.getName)
-      FileUtils.copyDirectory(level.directory, saveDirectory)
+      FileUtils.moveDirectory(level.directory, saveDirectory)
       SystemToast.add(MinecraftClient.getInstance().getToastManager, SystemToast.Type.WORLD_BACKUP, new LiteralText(s"Restored ${level.getName}"), null)
       LOGGER.info(s"Restored ${level.getName}")
     } catch {
@@ -53,7 +53,7 @@ object ConfirmRestoreScreen {
   }
 
   @tailrec
-  def resolveTargetName(directory: Path, levelName: String, index: Int = 0): File = {
+  def resolveTargetName(directory: Path, levelName: String, index: Int = -1): File = {
     val candidateDirectory = if (index == -1) directory.resolve(levelName).toFile
     else directory.resolve(levelName + "-" + index).toFile
     if (candidateDirectory.exists()) resolveTargetName(directory, levelName, index + 1)

@@ -5,6 +5,6 @@ import java.io.File
 import net.minecraft.world.level.LevelInfo
 import net.minecraft.world.level.storage.{LevelSummary, SaveVersionInfo}
 
-class BackupLevelSummary(levelInfo: LevelInfo, saveVersionInfo: SaveVersionInfo, name: String, requireConversion: Boolean, locked: Boolean, icon: File, val directory: File = null)
+class BackupLevelSummary(levelInfo: LevelInfo, saveVersionInfo: SaveVersionInfo, name: String, requireConversion: Boolean, locked: Boolean, icon: File, val directory: File)
   extends LevelSummary(levelInfo, saveVersionInfo, name, requireConversion, locked, icon) {
 }
