@@ -60,14 +60,31 @@ abstract class WorldListWidgetEntryMixin {
           FileUtils.moveDirectory(directory.toFile, saveDirectory)
           val sessionLock = new File(saveDirectory, "session.lock")
           if (sessionLock.exists() && !sessionLock.delete()) logger.error("Cannot delete session.lock!")
+
+          val backups = MemoryMain.BACKUPS_FOLDER.listFiles((f: File) => f.isDirectory)
+
+          if (backups == null || backups.isEmpty || backups.length < 15) return
+          val oldest = findOldestLevel(backups.iterator)
+          if (oldest == null) return
+          FileUtils.deleteDirectory(oldest)
         } catch {
-          case _: Throwable =>
-            logger.info(s"Cannot copy world. Resolving by vanilla backup")
+          case throwable: Throwable =>
+            logger.error(s"Cannot copy world. Resolving by vanilla backup", throwable)
             val session = MinecraftClient.getInstance().getLevelStorage.createSession(level.getName)
             EditWorldScreen.backupLevel(session)
             session.close()
         }
     }
+  }
+
+  private def findOldestLevel(dir: Iterator[File], oldest: File = null): File = {
+    if (!dir.hasNext) return oldest
+    if (oldest == null) return findOldestLevel(dir, dir.next())
+    val levelDir = dir.next()
+    val levelDat = new File(levelDir, "level.dat")
+    if (!levelDat.exists()) return findOldestLevel(dir, oldest)
+    if (new File(oldest, "level.dat").lastModified() > levelDat.lastModified()) return findOldestLevel(dir, levelDir)
+    findOldestLevel(dir, oldest)
   }
 
   //noinspection ScalaDeprecation,ScalaUnusedSymbol
