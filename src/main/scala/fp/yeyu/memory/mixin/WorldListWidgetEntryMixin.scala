@@ -90,7 +90,7 @@ abstract class WorldListWidgetEntryMixin {
 
       var displayName = this.level.getDisplayName
       val date = this.level.getName + " (" + DATE_FORMAT.format(new Date(this.level.getLastPlayed)) + ")"
-      val levelCaption = new LiteralText("This level was deleted.")
+      val levelCaption = new LiteralText("This world was deleted.")
       if (StringUtils.isEmpty(displayName)) displayName = I18n.translate("selectWorld.world") + " " + (index + 1)
 
       val textRenderer = client.textRenderer
