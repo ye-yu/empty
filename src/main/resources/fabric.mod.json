@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "memory-mod",
+  "id": "postponed-d",
   "version": "v0.0.1",
-  "name": "Time Shift",
-  "description": "Create multiple saves and backups of your world",
+  "name": "Postponed Delete",
+  "description": "Backups your deleted world in-case you might regret that",
   "authors": [
     "YeYu"
   ],
@@ -23,7 +23,7 @@
     ]
   },
   "mixins": [
-    "mm.mixins.json"
+    "postmod.mixins.json"
   ],
   "suggests": {
     "flamingo": "*"
