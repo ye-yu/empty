@@ -8,6 +8,7 @@ import net.minecraft.client.gui.widget.ButtonWidget
 
 object BackupListUtil {
 
+  // hide or not
   var toggleState = false
 
   //noinspection ScalaUnusedSymbol
@@ -16,6 +17,7 @@ object BackupListUtil {
     if (screen == null) return
     if (!screen.isInstanceOf[SelectWorldScreen] && !screen.isInstanceOf[CreateWorldScreen]) return
     toggleState = !toggleState
+    MemoryMain.writeState(toggleState)
 
     if (screen.isInstanceOf[SelectWorldScreen]) {
       val worldScreen = screen.asInstanceOf[SelectWorldScreenAccessor]
