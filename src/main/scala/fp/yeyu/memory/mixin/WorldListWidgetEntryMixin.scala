@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.mojang.blaze3d.systems.RenderSystem
-import fp.yeyu.memory.{BackupLevelSummary, ConfirmRestoreScreen, LevelUtil, MemoryMain}
+import fp.yeyu.memory.{BackupLevelSummary, ConfirmRestoreScreen, FileIsDirectoryFilter, LevelUtil, MemoryMain}
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.screen.world.{EditWorldScreen, SelectWorldScreen, WorldListWidget}
@@ -61,8 +61,7 @@ abstract class WorldListWidgetEntryMixin {
           val sessionLock = new File(saveDirectory, "session.lock")
           if (sessionLock.exists() && !sessionLock.delete()) logger.error("Cannot delete session.lock!")
 
-          val backups = MemoryMain.BACKUPS_FOLDER.listFiles((f: File) => f.isDirectory)
-
+          val backups = MemoryMain.BACKUPS_FOLDER.listFiles(FileIsDirectoryFilter)
           if (backups == null || backups.isEmpty || backups.length < 15) return
           val oldest = findOldestLevel(backups.iterator)
           if (oldest == null) return

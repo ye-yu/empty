@@ -34,32 +34,28 @@ class LevelStorageMixin {
     val files = backupsDirectory.toFile.listFiles
     if (files == null) return
     val size = files.length
-
-    repeat(i => {
-      val backupDirectory = files(i)
-      if (backupDirectory.isDirectory) {
-        val nbt = NbtIo.readCompressed(new File(backupDirectory, "level.dat")).getCompound("Data")
-        nbt.remove("Player")
-        val dataVersion = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-
-        if (SharedConstants.getGameVersion.getWorldVersion == dataVersion) {
-          val dynamic = new Dynamic(NbtOps.INSTANCE, nbt)
-          val saveVersionInfo = SaveVersionInfo.fromDynamic(dynamic)
-          val requiresConversion = saveVersionInfo.getVersionId != 19133
-          val iconFile = new File(backupDirectory, "icon.png")
-          val levelInfo = LevelInfo.fromDynamic(dynamic, DataPackSettings.SAFE_MODE)
-          val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, backupDirectory.getName, requiresConversion, true, iconFile, backupDirectory)
-          levelList.add(levelSummary)
-        }
-      }
-    }, size)
+    appendBackupLevel(levelList, files, size)
   }
 
   @tailrec
-  final def repeat(intConsumer: Int => Unit, count: Int, start: Int = 0): Unit = {
-    if (start < count) {
-      intConsumer(start)
-      repeat(intConsumer, count, start + 1)
+  final def appendBackupLevel(levelList: util.List[LevelSummary], files: Array[File], count: Int, value: Int = 0): Unit = {
+    if (value >= count) return
+    val backupDirectory = files(value)
+    if (backupDirectory.isDirectory) {
+      val nbt = NbtIo.readCompressed(new File(backupDirectory, "level.dat")).getCompound("Data")
+      nbt.remove("Player")
+      val dataVersion = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
+
+      if (SharedConstants.getGameVersion.getWorldVersion == dataVersion) {
+        val dynamic = new Dynamic(NbtOps.INSTANCE, nbt)
+        val saveVersionInfo = SaveVersionInfo.fromDynamic(dynamic)
+        val requiresConversion = saveVersionInfo.getVersionId != 19133
+        val iconFile = new File(backupDirectory, "icon.png")
+        val levelInfo = LevelInfo.fromDynamic(dynamic, DataPackSettings.SAFE_MODE)
+        val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, backupDirectory.getName, requiresConversion, true, iconFile, backupDirectory)
+        levelList.add(levelSummary)
+      }
     }
+    appendBackupLevel(levelList, files, count, value + 1)
   }
 }
