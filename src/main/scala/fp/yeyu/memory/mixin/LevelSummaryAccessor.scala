@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Accessor
 @Mixin(Array(classOf[LevelSummary]))
 trait LevelSummaryAccessor {
   @Accessor
-  def getLevelInfo: LevelInfo
+  def getField_25022: LevelInfo
 }

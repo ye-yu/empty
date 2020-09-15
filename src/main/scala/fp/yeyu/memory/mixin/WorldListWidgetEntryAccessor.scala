@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Accessor
 @Mixin(Array(classOf[WorldListWidget#Entry]))
 trait WorldListWidgetEntryAccessor {
   @Accessor
-  def getLevel: LevelSummary
+  def getField_19138: LevelSummary
 }
