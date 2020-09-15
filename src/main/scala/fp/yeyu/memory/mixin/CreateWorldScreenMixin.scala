@@ -14,6 +14,12 @@ abstract class CreateWorldScreenMixin extends Screen(null) {
   //noinspection ScalaUnusedSymbol
   @Inject(method = Array("init"), at = Array(new At("TAIL")))
   def onInit(callbackInfo: CallbackInfo): Unit = {
-    addButton(new ButtonWidget(this.width - 105, 2, 100, 20, new LiteralText("Show Backups"), BackupListUtil.onToggleWorld))
+    addButton(
+      new ButtonWidget(this.width - 105,
+        2,
+        100,
+        20,
+        if (BackupListUtil.toggleState) BackupListUtil.hideBackups else BackupListUtil.showBackups,
+        BackupListUtil.onToggleWorld))
   }
 }

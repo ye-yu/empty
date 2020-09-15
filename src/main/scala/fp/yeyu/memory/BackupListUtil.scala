@@ -5,11 +5,14 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.TitleScreen
 import net.minecraft.client.gui.screen.world.{CreateWorldScreen, SelectWorldScreen}
 import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.text.LiteralText
 
 object BackupListUtil {
 
   // hide or not
   var toggleState = false
+  val showBackups = new LiteralText("Show Backups")
+  val hideBackups = new LiteralText("Hide Backups")
 
   //noinspection ScalaUnusedSymbol
   def onToggleWorld(buttonWidget: ButtonWidget): Unit = {
@@ -18,6 +21,7 @@ object BackupListUtil {
     if (!screen.isInstanceOf[SelectWorldScreen] && !screen.isInstanceOf[CreateWorldScreen]) return
     toggleState = !toggleState
     MemoryMain.writeState(toggleState)
+    buttonWidget.setMessage(if (toggleState) hideBackups else showBackups)
 
     if (screen.isInstanceOf[SelectWorldScreen]) {
       val worldScreen = screen.asInstanceOf[SelectWorldScreenAccessor]
