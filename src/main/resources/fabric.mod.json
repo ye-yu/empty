@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "postponed-d",
+  "id": "pdmod",
   "version": "v0.0.1",
   "name": "Postponed Delete",
   "description": "Backups your deleted world in-case you might regret that",
@@ -23,7 +23,7 @@
     ]
   },
   "mixins": [
-    "postmod.mixins.json"
+    "pdmod.mixins.json"
   ],
   "suggests": {
     "flamingo": "*"

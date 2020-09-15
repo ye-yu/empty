@@ -15,9 +15,7 @@ import org.apache.logging.log4j.LogManager
 import scala.annotation.tailrec
 
 class ConfirmRestoreScreen(level: BackupLevelSummary, selectWorldScreen: SelectWorldScreen) extends ConfirmScreen(
-  confirm => {
-    ConfirmRestoreScreen.onRestore(confirm, level, selectWorldScreen)
-  },
+  confirm => { ConfirmRestoreScreen.onRestore(confirm, level, selectWorldScreen) },
   new LiteralText(s"Restore '${level.getDisplayName}'?"),
   new LiteralText(""),
   new LiteralText("Restore"),

@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.{Mixin, Shadow}
 
 @Mixin(Array(classOf[SelectWorldScreen]))
 abstract class SelectWorldScreenMixin extends Screen(null) {
-  @Shadow var levelList: WorldListWidget = _
 
   @Shadow var deleteButton: ButtonWidget = _
   @Shadow var selectButton: ButtonWidget = _
   @Shadow var editButton: ButtonWidget = _
   @Shadow var recreateButton: ButtonWidget = _
+  @Shadow var levelList: WorldListWidget = _
 
   //noinspection ScalaUnusedSymbol
   @Inject(method = Array("worldSelected"), at = Array(new At("RETURN")), cancellable = true)

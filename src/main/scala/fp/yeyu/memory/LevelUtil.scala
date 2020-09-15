@@ -1,13 +1,14 @@
 package fp.yeyu.memory
 
 import java.io.File
-import java.util.function.BiFunction
+import java.util.function.{BiFunction, Supplier}
 
 import com.mojang.datafixers.DataFixer
 import com.mojang.serialization.Dynamic
 import net.minecraft.SharedConstants
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.sound.PositionedSoundInstance
+import net.minecraft.client.gui.widget.TextFieldWidget
+import net.minecraft.client.sound.{PositionedSoundInstance, SoundInstance}
 import net.minecraft.datafixer.DataFixTypes
 import net.minecraft.nbt.{CompoundTag, NbtIo, NbtOps, Tag}
 import net.minecraft.resource.DataPackSettings
@@ -17,12 +18,14 @@ import net.minecraft.world.level.storage.{LevelSummary, SaveVersionInfo}
 import org.apache.logging.log4j.LogManager
 
 object LevelUtil {
-  private val LOGGER = LogManager.getLogger()
+  def createTextSupplier(searchBox: TextFieldWidget): Supplier[String] = () => searchBox.getText
 
   def restoreWorld(level: LevelSummary): Unit = {
     println(s"Restoring level $level")
     MinecraftClient.getInstance().getSoundManager.play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f))
   }
+
+  private val LOGGER = LogManager.getLogger()
 
   def createLevelFileParser(file: File, locked: Boolean): BiFunction[File, DataFixer, LevelSummary] =
     (file2: File, dataFixer: DataFixer) =>
