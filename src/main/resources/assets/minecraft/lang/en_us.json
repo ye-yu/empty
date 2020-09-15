@@ -1,0 +1,3 @@
+{
+  "selectWorld.deleteWarning": "You have a backup mod installed. If this world has not yet been deleted, this will put the world into a backup folder. If this is a deleted world, this will permanently delete the world."
+}
