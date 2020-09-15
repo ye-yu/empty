@@ -22,7 +22,6 @@ class MemoryMain extends ClientModInitializer {
 }
 
 object MemoryMain {
-  @volatile var lock = false
   private val LOGGER: Logger = LogManager.getLogger()
   private val MOD_FOLDER = "./mods/Time Shifter"
   private val RECYCLE_BIN = "recyclebin"
