@@ -1,5 +1,6 @@
 package fp.yeyu.memory.mixin
 
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -36,6 +37,7 @@ abstract class WorldListWidgetEntryMixin {
   @Shadow
   @Final val level: LevelSummary = null
 
+
   //noinspection ScalaUnusedSymbol
   @Inject(method = Array("method_20170"), at = Array(new At("HEAD")), cancellable = true)
   def onDelete(bool: Boolean, callback: CallbackInfo): Unit = {
@@ -56,6 +58,8 @@ abstract class WorldListWidgetEntryMixin {
           logger.info(s"About to copy $directory")
           val saveDirectory = ConfirmRestoreScreen.resolveTargetName(MemoryMain.BACKUPS_FOLDER.toPath, level.getName)
           FileUtils.moveDirectory(directory.toFile, saveDirectory)
+          val sessionLock = new File(saveDirectory, "session.lock")
+          if (sessionLock.exists() && !sessionLock.delete()) logger.error("Cannot delete session.lock!")
         } catch {
           case _: Throwable =>
             logger.info(s"Cannot copy world. Resolving by vanilla backup")
