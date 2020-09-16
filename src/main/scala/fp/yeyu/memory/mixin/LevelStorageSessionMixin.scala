@@ -15,17 +15,17 @@ import org.spongepowered.asm.mixin.{Mixin, Shadow}
 @Mixin(Array(classOf[LevelStorage#Session]))
 abstract class LevelStorageSessionMixin {
 
-  @Shadow def getDirectory(worldSavePath: WorldSavePath): Path
+  @Shadow def method_27010(worldSavePath: WorldSavePath): Path
 
-  @Shadow def getDirectoryName: String
+  @Shadow def method_27005: String
 
-  @Inject(method = Array("createBackup"), at = Array(new At("HEAD")), cancellable = true)
+  @Inject(method = Array("method_27016"), at = Array(new At("HEAD")), cancellable = true)
   def onCreateBackup(callbackInfoReturnable: CallbackInfoReturnable[Long]): Unit = {
     val logger = LogManager.getLogger
     try {
-      val directory = getDirectory(WorldSavePath.ROOT)
+      val directory = method_27010(WorldSavePath.ROOT)
       logger.info(s"About to copy $directory")
-      val saveDirectory = ConfirmRestoreScreen.resolveTargetName(MemoryMain.BACKUPS_FOLDER.toPath, parseSplitName(getDirectoryName))
+      val saveDirectory = ConfirmRestoreScreen.resolveTargetName(MemoryMain.BACKUPS_FOLDER.toPath, parseSplitName(method_27005))
       FileUtils.copyDirectory(directory.toFile, saveDirectory)
       val sessionLock = new File(saveDirectory, "session.lock")
       if (sessionLock.exists() && !sessionLock.delete()) logger.error("Cannot delete session.lock!")
