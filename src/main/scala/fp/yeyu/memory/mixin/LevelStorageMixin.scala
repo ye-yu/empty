@@ -1,15 +1,16 @@
 package fp.yeyu.memory.mixin
 
-import java.io.File
+import java.io.{File, FileInputStream}
 import java.nio.file.Path
 import java.util
 
 import com.mojang.datafixers.DataFixer
-import com.mojang.serialization.Dynamic
+import com.mojang.serialization.{Dynamic, DynamicOps}
 import fp.yeyu.memory.{BackupLevelSummary, BackupListUtil}
 import net.minecraft.SharedConstants
-import net.minecraft.nbt.{NbtIo, NbtOps}
+import net.minecraft.nbt.NbtIo
 import net.minecraft.resource.DataPackSettings
+import net.minecraft.world.{Difficulty, GameMode, GameRules}
 import net.minecraft.world.level.LevelInfo
 import net.minecraft.world.level.storage.{LevelStorage, LevelSummary, SaveVersionInfo}
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
@@ -42,19 +43,16 @@ class LevelStorageMixin {
     if (value >= count) return
     val backupDirectory = files(value)
     if (backupDirectory.isDirectory) {
-      val nbt = NbtIo.readCompressed(new File(backupDirectory, "level.dat")).getCompound("Data")
+      val nbt = NbtIo.readCompressed(new FileInputStream(new File(backupDirectory, "level.dat"))).getCompound("Data")
       nbt.remove("Player")
-      val dataVersion = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-
-      if (SharedConstants.getGameVersion.getWorldVersion == dataVersion) {
-        val dynamic = new Dynamic(NbtOps.INSTANCE, nbt)
-        val saveVersionInfo = SaveVersionInfo.fromDynamic(dynamic)
-        val requiresConversion = saveVersionInfo.getVersionId != 19133
-        val iconFile = new File(backupDirectory, "icon.png")
-        val levelInfo = LevelInfo.fromDynamic(dynamic, DataPackSettings.SAFE_MODE)
-        val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, backupDirectory.getName, requiresConversion, true, iconFile, backupDirectory)
-        levelList.add(levelSummary)
-      }
+      val lastPlayed = if (nbt.contains("LastPlayed")) nbt.getLong("LastPlayed") else 0L
+      val saveVersionInfo = new SaveVersionInfo(-1, lastPlayed, "", -1, false)
+      val name = if (nbt.contains("LevelName")) nbt.getString("LevelName") else "(Deleted World)"
+      val gameMode = GameMode.byId(if (nbt.contains("GameType")) nbt.getInt("GameType") else -1)
+      val levelInfo = new LevelInfo(name, gameMode, false, Difficulty.EASY, false, new GameRules(), DataPackSettings.SAFE_MODE)
+      val iconFile = new File(backupDirectory, "icon.png")
+      val levelSummary = new BackupLevelSummary(levelInfo, saveVersionInfo, backupDirectory.getName, true, true, iconFile, backupDirectory)
+      levelList.add(levelSummary)
     }
     appendBackupLevel(levelList, files, count, value + 1)
   }
