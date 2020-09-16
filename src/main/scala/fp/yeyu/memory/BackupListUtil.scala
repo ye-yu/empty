@@ -45,6 +45,4 @@ object BackupListUtil {
     if (new File(oldest, "level.dat").lastModified() > levelDat.lastModified()) return findOldestLevel(dir, levelDir)
     findOldestLevel(dir, oldest)
   }
-
-
 }

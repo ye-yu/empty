@@ -19,18 +19,6 @@ abstract class LevelStorageSessionMixin {
 
   @Shadow def getDirectoryName: String
 
-  def parseSplitName(name: String): String = {
-    val lastDelimAt = name.lastIndexOf('-')
-    if (lastDelimAt == 0) return name
-    val intCandidate = name.substring(name.lastIndexOf('-') + 1)
-    try {
-      intCandidate.toInt
-      name.substring(0, lastDelimAt)
-    } catch {
-      case _: NumberFormatException => name
-    }
-  }
-
   @Inject(method = Array("createBackup"), at = Array(new At("HEAD")), cancellable = true)
   def onCreateBackup(callbackInfoReturnable: CallbackInfoReturnable[Long]): Unit = {
     val logger = LogManager.getLogger
@@ -52,6 +40,18 @@ abstract class LevelStorageSessionMixin {
     } catch {
       case throwable: Throwable =>
         logger.error(s"Cannot copy world. Resorting to vanilla backup", throwable)
+    }
+  }
+
+  def parseSplitName(name: String): String = {
+    val lastDelimAt = name.lastIndexOf('-')
+    if (lastDelimAt == 0) return name
+    val intCandidate = name.substring(name.lastIndexOf('-') + 1)
+    try {
+      intCandidate.toInt
+      name.substring(0, lastDelimAt)
+    } catch {
+      case _: NumberFormatException => name
     }
   }
 
