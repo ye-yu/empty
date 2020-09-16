@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.mojang.blaze3d.systems.RenderSystem
-import fp.yeyu.memory.{BackupLevelSummary, ConfirmRestoreScreen, FileIsDirectoryFilter, LevelUtil, MemoryMain}
+import fp.yeyu.memory._
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.screen.world.{EditWorldScreen, SelectWorldScreen, WorldListWidget}
@@ -25,18 +25,13 @@ import org.spongepowered.asm.mixin.{Final, Mixin, Shadow}
 @Mixin(Array(classOf[WorldListWidget#Entry]))
 abstract class WorldListWidgetEntryMixin {
 
-  @Shadow var screen: SelectWorldScreen = _
-
-  @Shadow var iconLocation: Identifier = _
-
-  @Shadow var time: Long = _
-
   @Shadow
   @Final val icon: NativeImageBackedTexture = null
-
   @Shadow
   @Final val level: LevelSummary = null
-
+  @Shadow var screen: SelectWorldScreen = _
+  @Shadow var iconLocation: Identifier = _
+  @Shadow var time: Long = _
 
   //noinspection ScalaUnusedSymbol
   @Inject(method = Array("method_20170"), at = Array(new At("HEAD")), cancellable = true)
@@ -74,16 +69,6 @@ abstract class WorldListWidgetEntryMixin {
             session.close()
         }
     }
-  }
-
-  private def findOldestLevel(dir: Iterator[File], oldest: File = null): File = {
-    if (!dir.hasNext) return oldest
-    if (oldest == null) return findOldestLevel(dir, dir.next())
-    val levelDir = dir.next()
-    val levelDat = new File(levelDir, "level.dat")
-    if (!levelDat.exists()) return findOldestLevel(dir, oldest)
-    if (new File(oldest, "level.dat").lastModified() > levelDat.lastModified()) return findOldestLevel(dir, levelDir)
-    findOldestLevel(dir, oldest)
   }
 
   //noinspection ScalaDeprecation,ScalaUnusedSymbol
@@ -165,5 +150,15 @@ abstract class WorldListWidgetEntryMixin {
       callbackInfo.setReturnValue(true)
     }
     callbackInfo.setReturnValue(true)
+  }
+
+  private def findOldestLevel(dir: Iterator[File], oldest: File = null): File = {
+    if (!dir.hasNext) return oldest
+    if (oldest == null) return findOldestLevel(dir, dir.next())
+    val levelDir = dir.next()
+    val levelDat = new File(levelDir, "level.dat")
+    if (!levelDat.exists()) return findOldestLevel(dir, oldest)
+    if (new File(oldest, "level.dat").lastModified() > levelDat.lastModified()) return findOldestLevel(dir, levelDir)
+    findOldestLevel(dir, oldest)
   }
 }

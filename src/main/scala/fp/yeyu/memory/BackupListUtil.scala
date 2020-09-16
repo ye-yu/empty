@@ -9,10 +9,10 @@ import net.minecraft.text.LiteralText
 
 object BackupListUtil {
 
-  // hide or not
-  var toggleState = false
   val showBackups = new LiteralText("Show Backups")
   val hideBackups = new LiteralText("Hide Backups")
+  // hide or not
+  var toggleState = false
 
   //noinspection ScalaUnusedSymbol
   def onToggleWorld(buttonWidget: ButtonWidget): Unit = {

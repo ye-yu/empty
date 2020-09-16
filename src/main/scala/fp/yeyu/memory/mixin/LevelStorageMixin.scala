@@ -5,14 +5,12 @@ import java.nio.file.Path
 import java.util
 
 import com.mojang.datafixers.DataFixer
-import com.mojang.serialization.{Dynamic, DynamicOps}
 import fp.yeyu.memory.{BackupLevelSummary, BackupListUtil}
-import net.minecraft.SharedConstants
 import net.minecraft.nbt.NbtIo
 import net.minecraft.resource.DataPackSettings
-import net.minecraft.world.{Difficulty, GameMode, GameRules}
 import net.minecraft.world.level.LevelInfo
 import net.minecraft.world.level.storage.{LevelStorage, LevelSummary, SaveVersionInfo}
+import net.minecraft.world.{Difficulty, GameMode, GameRules}
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 import org.spongepowered.asm.mixin.injection.{At, Inject}
 import org.spongepowered.asm.mixin.{Final, Mixin, Shadow}
