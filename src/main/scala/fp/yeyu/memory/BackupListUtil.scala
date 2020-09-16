@@ -27,7 +27,7 @@ object BackupListUtil {
 
     if (screen.isInstanceOf[SelectWorldScreen]) {
       val worldScreen = screen.asInstanceOf[SelectWorldScreenAccessor]
-      worldScreen.getLevelList.filter(() => worldScreen.getSearchBox.getText, true)
+      worldScreen.getField_3218.filter(() => worldScreen.getField_3220.getText, true)
       return
     }
 

@@ -25,13 +25,12 @@ import org.spongepowered.asm.mixin.{Final, Mixin, Shadow}
 @Mixin(Array(classOf[WorldListWidget#Entry]))
 abstract class WorldListWidgetEntryMixin {
 
-  @Shadow
-  @Final val icon: NativeImageBackedTexture = null
-  @Shadow
-  @Final val level: LevelSummary = null
-  @Shadow var screen: SelectWorldScreen = _
-  @Shadow var iconLocation: Identifier = _
-  @Shadow var time: Long = _
+  @Shadow var field_19137: SelectWorldScreen = _
+  @Shadow var field_19139: Identifier = _
+  @Shadow var field_19142: Long = _
+  @Shadow @Final val field_19141: NativeImageBackedTexture = null
+  @Shadow @Final val field_19138: LevelSummary = null
+
 
   //noinspection ScalaUnusedSymbol
   @Inject(method = Array("method_20170"), at = Array(new At("HEAD")), cancellable = true)
@@ -39,19 +38,19 @@ abstract class WorldListWidgetEntryMixin {
     val logger = LogManager.getLogger
     if (!bool) return
 
-    level match {
+    field_19138 match {
       case summary: BackupLevelSummary =>
         FileUtils.deleteDirectory(summary.directory)
-        val levelList = screen.asInstanceOf[SelectWorldScreenAccessor].getLevelList
-        val searchBox = screen.asInstanceOf[SelectWorldScreenAccessor].getSearchBox
+        val levelList = field_19137.asInstanceOf[SelectWorldScreenAccessor].getField_3218
+        val searchBox = field_19137.asInstanceOf[SelectWorldScreenAccessor].getField_3220
         levelList.filter(LevelUtil.createTextSupplier(searchBox), true)
-        MinecraftClient.getInstance().openScreen(screen)
+        MinecraftClient.getInstance().openScreen(field_19137)
         callback.cancel()
       case _ =>
         try {
-          val directory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory.resolve(level.getName)
+          val directory = MinecraftClient.getInstance().getLevelStorage.getSavesDirectory.resolve(field_19138.getName)
           logger.info(s"About to copy $directory")
-          val saveDirectory = ConfirmRestoreScreen.resolveTargetName(MemoryMain.BACKUPS_FOLDER.toPath, level.getDisplayName)
+          val saveDirectory = ConfirmRestoreScreen.resolveTargetName(MemoryMain.BACKUPS_FOLDER.toPath, field_19138.getDisplayName)
           FileUtils.moveDirectory(directory.toFile, saveDirectory)
           val sessionLock = new File(saveDirectory, "session.lock")
           if (sessionLock.exists() && !sessionLock.delete()) logger.error("Cannot delete session.lock!")
@@ -63,8 +62,8 @@ abstract class WorldListWidgetEntryMixin {
           FileUtils.deleteDirectory(oldest)
         } catch {
           case throwable: Throwable =>
-            logger.error(s"Cannot copy world. Resorting to vanilla backup", throwable)
-            val session = MinecraftClient.getInstance().getLevelStorage.createSession(level.getName)
+            logger.error(s"Cannot copy world. Resolving by vanilla backup", throwable)
+            val session = MinecraftClient.getInstance().getLevelStorage.createSession(field_19138.getName)
             EditWorldScreen.backupLevel(session)
             session.close()
         }
@@ -72,7 +71,7 @@ abstract class WorldListWidgetEntryMixin {
   }
 
   //noinspection ScalaDeprecation,ScalaUnusedSymbol
-  @Inject(method = Array("render"), at = Array(new At("INVOKE")), cancellable = true)
+  @Inject(method = Array("method_25343"), at = Array(new At("INVOKE")), cancellable = true)
   def onRender(matrices: MatrixStack,
                index: Int,
                y: Int,
@@ -84,7 +83,7 @@ abstract class WorldListWidgetEntryMixin {
                hovered: Boolean,
                tickDelta: Float,
                callbackInfo: CallbackInfo): Unit = {
-    if (level.isInstanceOf[BackupLevelSummary]) {
+    if (field_19138.isInstanceOf[BackupLevelSummary]) {
       val DATE_FORMAT = new SimpleDateFormat
       val client = MinecraftClient.getInstance()
       val UNKNOWN_SERVER_LOCATION = new Identifier("textures/misc/unknown_server.png")
@@ -93,8 +92,8 @@ abstract class WorldListWidgetEntryMixin {
       // statics
       val restoreMessage = new LiteralText("You can restore this world").formatted(Formatting.YELLOW)
 
-      var displayName = this.level.getDisplayName
-      val date = this.level.getName + " (" + DATE_FORMAT.format(new Date(this.level.getLastPlayed)) + ")"
+      var displayName = this.field_19138.getDisplayName
+      val date = this.field_19138.getName + " (" + DATE_FORMAT.format(new Date(this.field_19138.getLastPlayed)) + ")"
       val levelCaption = new LiteralText("This world was deleted.")
       if (StringUtils.isEmpty(displayName)) displayName = I18n.translate("selectWorld.world") + " " + (index + 1)
 
@@ -112,7 +111,7 @@ abstract class WorldListWidgetEntryMixin {
 
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F)
 
-      client.getTextureManager.bindTexture(if (icon != null) iconLocation else UNKNOWN_SERVER_LOCATION)
+      client.getTextureManager.bindTexture(if (field_19141 != null) field_19139 else UNKNOWN_SERVER_LOCATION)
 
       RenderSystem.enableBlend()
       DrawableHelper.drawTexture(matrices, x, y, 0.0F, 0.0F, 32, 32, 32, 32)
@@ -127,26 +126,26 @@ abstract class WorldListWidgetEntryMixin {
         val j = if (bl) 32
         else 0
         DrawableHelper.drawTexture(matrices, x, y, 96.0F, j.toFloat, 32, 32, 256, 256)
-        if (bl) this.screen.setTooltip(client.textRenderer.wrapLines(restoreMessage, 175))
+        if (bl) this.field_19137.setTooltip(client.textRenderer.wrapLines(restoreMessage, 175))
       }
       callbackInfo.cancel()
     }
   }
 
   //noinspection ScalaUnusedSymbol
-  @Inject(method = Array("mouseClicked"), at = Array(new At("HEAD")), cancellable = true)
+  @Inject(method = Array("method_25402"), at = Array(new At("HEAD")), cancellable = true)
   def onMouseClicked(mouseX: Double, mouseY: Double, button: Int, callbackInfo: CallbackInfoReturnable[Boolean]): Unit = {
-    if (!level.isInstanceOf[BackupLevelSummary]) return
+    if (!field_19138.isInstanceOf[BackupLevelSummary]) return
     if (MinecraftClient.getInstance().currentScreen == null) return
-    val thisWorldListWidget = MinecraftClient.getInstance().currentScreen.asInstanceOf[SelectWorldScreenAccessor].getLevelList
+    val thisWorldListWidget = MinecraftClient.getInstance().currentScreen.asInstanceOf[SelectWorldScreenAccessor].getField_3218
     thisWorldListWidget.setSelected(this.asInstanceOf[Object].asInstanceOf[WorldListWidget#Entry])
-    this.screen.worldSelected(thisWorldListWidget.method_20159.isPresent)
-    if (Util.getMeasuringTimeMs - this.time < 250L) {
-      LevelUtil.restoreWorld(level)
+    this.field_19137.worldSelected(thisWorldListWidget.method_20159.isPresent)
+    if (Util.getMeasuringTimeMs - this.field_19142 < 250L) {
+      LevelUtil.restoreWorld(field_19138)
       callbackInfo.setReturnValue(true)
     }
     else {
-      this.time = Util.getMeasuringTimeMs
+      this.field_19142 = Util.getMeasuringTimeMs
       callbackInfo.setReturnValue(true)
     }
     callbackInfo.setReturnValue(true)

@@ -31,8 +31,8 @@ object ConfirmRestoreScreen {
 
   def onRestore(confirm: Boolean, level: BackupLevelSummary, selectWorldScreen: SelectWorldScreen): Unit = {
     if (!confirm) {
-      val levelList = selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getLevelList
-      levelList.filter(() => selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getSearchBox.getText, true)
+      val levelList = selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getField_3218
+      levelList.filter(() => selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getField_3220.getText, true)
       MinecraftClient.getInstance().openScreen(selectWorldScreen)
       return
     }
@@ -49,8 +49,8 @@ object ConfirmRestoreScreen {
     }
 
     FileUtils.deleteDirectory(level.directory)
-    val levelList = selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getLevelList
-    levelList.filter(() => selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getSearchBox.getText, true)
+    val levelList = selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getField_3218
+    levelList.filter(() => selectWorldScreen.asInstanceOf[SelectWorldScreenAccessor].getField_3220.getText, true)
     MinecraftClient.getInstance().openScreen(selectWorldScreen)
   }
 

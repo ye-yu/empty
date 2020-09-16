@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.{At, Inject}
 @Mixin(Array(classOf[CreateWorldScreen]))
 abstract class CreateWorldScreenMixin extends Screen(null) {
   //noinspection ScalaUnusedSymbol
-  @Inject(method = Array("init"), at = Array(new At("TAIL")))
+  @Inject(method = Array("method_25426"), at = Array(new At("TAIL")))
   def onInit(callbackInfo: CallbackInfo): Unit = {
     addButton(
       new ButtonWidget(this.width - 105,

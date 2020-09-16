@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.gen.Accessor
 @Mixin(Array(classOf[SelectWorldScreen]))
 trait SelectWorldScreenAccessor {
   @Accessor
-  def getLevelList: WorldListWidget
+  def getField_3218: WorldListWidget
 
   @Accessor
-  def getSearchBox: TextFieldWidget
+  def getField_3220: TextFieldWidget
 }

@@ -13,46 +13,46 @@ import org.spongepowered.asm.mixin.{Mixin, Shadow}
 @Mixin(Array(classOf[SelectWorldScreen]))
 abstract class SelectWorldScreenMixin extends Screen(null) {
 
-  @Shadow var deleteButton: ButtonWidget = _
-  @Shadow var selectButton: ButtonWidget = _
-  @Shadow var editButton: ButtonWidget = _
-  @Shadow var recreateButton: ButtonWidget = _
-  @Shadow var levelList: WorldListWidget = _
+  @Shadow var field_3219: ButtonWidget = _
+  @Shadow var field_3224: ButtonWidget = _
+  @Shadow var field_3215: ButtonWidget = _
+  @Shadow var field_3216: ButtonWidget = _
+  @Shadow var field_3218: WorldListWidget = _
 
   //noinspection ScalaUnusedSymbol
-  @Inject(method = Array("worldSelected"), at = Array(new At("RETURN")), cancellable = true)
+  @Inject(method = Array("method_19940"), at = Array(new At("RETURN")), cancellable = true)
   def onWorldSelected(active: Boolean, callbackInfo: CallbackInfo): Unit = {
     val recreateText = new TranslatableText("selectWorld.recreate")
     val restoreText = new LiteralText("Restore")
     if (!active) {
-      this.recreateButton.setMessage(recreateText)
+      this.field_3216.setMessage(recreateText)
       return
     }
 
-    if (!levelList.getSelected.asInstanceOf[WorldListWidgetEntryAccessor].getLevel.isInstanceOf[BackupLevelSummary]) {
-      this.recreateButton.setMessage(recreateText)
+    if (!field_3218.getSelected.asInstanceOf[WorldListWidgetEntryAccessor].getField_19138.isInstanceOf[BackupLevelSummary]) {
+      this.field_3216.setMessage(recreateText)
       return
     }
 
-    this.selectButton.active = false
-    this.editButton.active = false
-    this.deleteButton.active = true
-    this.recreateButton.active = true
+    this.field_3224.active = false
+    this.field_3215.active = false
+    this.field_3219.active = true
+    this.field_3216.active = true
 
-    this.recreateButton.setMessage(restoreText)
+    this.field_3216.setMessage(restoreText)
   }
 
   //noinspection ScalaUnusedSymbol
   @Inject(method = Array("method_19941"), at = Array(new At("INVOKE")), cancellable = true)
   def onRecreate(buttonWidget: ButtonWidget, callbackInfo: CallbackInfo): Unit = {
-    val level = levelList.getSelected.asInstanceOf[WorldListWidgetEntryAccessor].getLevel
+    val level = field_3218.getSelected.asInstanceOf[WorldListWidgetEntryAccessor].getField_19138
     if (!level.isInstanceOf[BackupLevelSummary]) return
     MinecraftClient.getInstance().openScreen(new ConfirmRestoreScreen(level.asInstanceOf[BackupLevelSummary], this.asInstanceOf[Object].asInstanceOf[SelectWorldScreen]))
     callbackInfo.cancel()
   }
 
   //noinspection ScalaUnusedSymbol
-  @Inject(method = Array("init"), at = Array(new At("TAIL")))
+  @Inject(method = Array("method_25426"), at = Array(new At("TAIL")))
   def onInit(callbackInfo: CallbackInfo): Unit = {
     addButton(
       new ButtonWidget(this.width - 105,
