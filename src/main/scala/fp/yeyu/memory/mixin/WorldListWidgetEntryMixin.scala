@@ -28,8 +28,10 @@ abstract class WorldListWidgetEntryMixin {
   @Shadow var field_19137: SelectWorldScreen = _
   @Shadow var field_19139: Identifier = _
   @Shadow var field_19142: Long = _
-  @Shadow @Final val field_19141: NativeImageBackedTexture = null
-  @Shadow @Final val field_19138: LevelSummary = null
+  @Shadow
+  @Final val field_19141: NativeImageBackedTexture = null
+  @Shadow
+  @Final val field_19138: LevelSummary = null
 
 
   //noinspection ScalaUnusedSymbol
@@ -94,7 +96,7 @@ abstract class WorldListWidgetEntryMixin {
 
       var displayName = this.field_19138.getDisplayName
       val date = this.field_19138.getName + " (" + DATE_FORMAT.format(new Date(this.field_19138.getLastPlayed)) + ")"
-      val levelCaption = new LiteralText("This world was deleted.")
+      val levelCaption = "This world was deleted."
       if (StringUtils.isEmpty(displayName)) displayName = I18n.translate("selectWorld.world") + " " + (index + 1)
 
       val textRenderer = client.textRenderer
