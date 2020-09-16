@@ -5,6 +5,7 @@
   "mixins": [
     "WorldListWidgetEntryMixin",
     "LevelStorageMixin",
+    "LevelStorageSessionMixin",
     "SelectWorldScreenMixin",
     "CreateWorldScreenMixin",
 

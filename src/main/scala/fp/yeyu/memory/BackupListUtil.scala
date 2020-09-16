@@ -1,5 +1,7 @@
 package fp.yeyu.memory
 
+import java.io.File
+
 import fp.yeyu.memory.mixin.SelectWorldScreenAccessor
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.TitleScreen
@@ -33,5 +35,16 @@ object BackupListUtil {
       MinecraftClient.getInstance().openScreen(new SelectWorldScreen(new TitleScreen))
     }
   }
+
+  def findOldestLevel(dir: Iterator[File], oldest: File = null): File = {
+    if (!dir.hasNext) return oldest
+    if (oldest == null) return findOldestLevel(dir, dir.next())
+    val levelDir = dir.next()
+    val levelDat = new File(levelDir, "level.dat")
+    if (!levelDat.exists()) return findOldestLevel(dir, oldest)
+    if (new File(oldest, "level.dat").lastModified() > levelDat.lastModified()) return findOldestLevel(dir, levelDir)
+    findOldestLevel(dir, oldest)
+  }
+
 
 }

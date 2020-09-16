@@ -4,7 +4,6 @@ import java.io.{File, FileInputStream}
 import java.nio.file.Path
 import java.util
 
-import com.mojang.datafixers.DataFixer
 import fp.yeyu.memory.{BackupLevelSummary, BackupListUtil}
 import net.minecraft.nbt.NbtIo
 import net.minecraft.resource.DataPackSettings
@@ -19,9 +18,6 @@ import scala.annotation.tailrec
 
 @Mixin(Array(classOf[LevelStorage]))
 class LevelStorageMixin {
-
-  @Shadow
-  @Final val dataFixer: DataFixer = null
 
   @Shadow
   @Final val backupsDirectory: Path = null
